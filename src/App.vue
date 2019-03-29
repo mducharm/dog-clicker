@@ -1,14 +1,21 @@
 <template>
   <div id="app">
-    <div class="container">
-      <div v-for="(breedObject, index) in breedsData" :key="index">
-        <img v-bind:src="breedObject.imgSrc">
-        <h1 v-if="'subBreed' in breedObject">{{breedObject.subBreed + " " + breedObject.breed}}</h1>
-        <h1 v-else>{{breedObject.breed}}</h1>
-      </div>
-      <!-- <DogCard v-for="(breedArray, index) in breedsData" :key="index">
+    <div class="container flex-container">
+      <div v-for="(breedObject, index) in breedsData" :key="index" class="card">
+        <div class="card-image">
+          <figure class="image is-4by3">
+            <img v-bind:src="breedObject.imgSrc">
+          </figure>
+        </div>
 
-      </DogCard>-->
+        <header class="card-header">
+          <h1
+            v-if="'subBreed' in breedObject"
+            class="card-header-text"
+          >{{breedObject.subBreed + " " + breedObject.breed}}</h1>
+          <h1 v-else class="card-header-text">{{breedObject.breed}}</h1>
+        </header>
+      </div>
     </div>
   </div>
 </template>
@@ -88,4 +95,9 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 } */
+
+.flex-container {
+  display: flex;
+  flex-wrap: wrap;
+}
 </style>
