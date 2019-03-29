@@ -1,11 +1,14 @@
 <template>
   <div id="app">
     <div class="container">
-      <DogCard v-for="(breedArray, index) in breedsData" :key="index">
-        <h1 v-if="breedArray.length > 1">{{breedArray[0] + ' ' + breedArray[1]}}</h1>
-        <h1 v-else>{{breedArray[0]}}</h1>
-      </DogCard>
-      {{breedsData}}
+      <div v-for="(breedObject, index) in breedsData" :key="index">
+        <img v-bind:src="breedObject.imgSrc">
+        <h1 v-if="'subBreed' in breedObject">{{breedObject.subBreed + " " + breedObject.breed}}</h1>
+        <h1 v-else>{{breedObject.breed}}</h1>
+      </div>
+      <!-- <DogCard v-for="(breedArray, index) in breedsData" :key="index">
+
+      </DogCard>-->
     </div>
   </div>
 </template>
@@ -21,7 +24,7 @@ export default {
   },
   data() {
     return {
-      breedsData: null
+      breedsData: []
     };
   },
   mounted() {
@@ -39,7 +42,7 @@ export default {
             breedArray.push([breed]);
           }
         });
-        this.breedsData = breedArray;
+        // this.breedsData = breedArray;
         return breedArray;
       })
       .then(breedsArray => {
@@ -52,14 +55,21 @@ export default {
                 }/images/random`
               )
               .then(response => {
-                console.log(response.data.message);
+                this.breedsData.push({
+                  breed: breed[1],
+                  subBreed: breed[0],
+                  imgSrc: response.data.message
+                });
                 return response.data.message;
               });
           } else {
             axios
               .get(`https://dog.ceo/api/breed/${breed[0]}/images/random`)
               .then(response => {
-                console.log(response.data.message);
+                this.breedsData.push({
+                  breed: breed[0],
+                  imgSrc: response.data.message
+                });
                 return response.data.message;
               });
           }
