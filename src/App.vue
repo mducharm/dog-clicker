@@ -16,6 +16,10 @@
           >{{breedObject.subBreed + " " + breedObject.breed}}</h1>
           <h1 v-else class="card-header-text">{{breedObject.breed}}</h1>
         </header>
+        <div>
+          <i class="material-icons">thumb_up</i>
+          <span class="tag is-dark count">0</span>
+        </div>
       </div>
     </div>
   </div>
@@ -107,11 +111,21 @@ export default {
 
 .flex-container {
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
+  justify-content: center;
   margin-top: 70px;
+}
+
+.card {
+  margin: 20px;
+  padding: 20px;
 }
 
 figure.image {
   overflow: hidden;
+}
+
+.count {
+  font-family: "Baloo Chettan", cursive;
 }
 </style>
