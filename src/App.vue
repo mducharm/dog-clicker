@@ -1,10 +1,11 @@
 <template>
   <div id="app">
+    <DogNavbar/>
     <div class="container flex-container">
       <div v-for="(breedObject, index) in breedsData" :key="index" class="card">
         <div class="card-image">
-          <figure class="image is-4by3">
-            <img v-bind:src="breedObject.imgSrc">
+          <figure class="image is-128x128">
+            <img v-bind:src="breedObject.imgSrc" style="clear: both;">
           </figure>
         </div>
 
@@ -22,12 +23,14 @@
 
 <script>
 import DogCard from "./components/DogCard.vue";
+import DogNavbar from "./components/DogNavbar.vue";
 import axios from "axios";
 
 export default {
   name: "app",
   components: {
-    DogCard
+    DogCard,
+    DogNavbar
   },
   data() {
     return {
@@ -96,8 +99,19 @@ export default {
   margin-top: 60px;
 } */
 
+#app {
+  background-image: url("./assets/wood.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .flex-container {
   display: flex;
   flex-wrap: wrap;
+  margin-top: 70px;
+}
+
+figure.image {
+  overflow: hidden;
 }
 </style>
