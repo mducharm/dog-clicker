@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <DogNavbar/>
-    <div class="container flex-container">
+    <div class="container flex-container" id="dog-container">
       <!-- {{ loadedBreeds }}
       {{ remainingBreedsToLoad }}-->
       <div v-for="(breed, index) in loadedBreeds" :key="index" class="card">
@@ -9,12 +9,10 @@
         <div class="card-image">
           <figure class="image is-128x128">
             <!-- <figure class="image is-128x128" v-lazy-container="{ selector: 'img' }"> -->
-            <!-- <img v-bind:src="getRandomImage(breed)" style="clear: both;"> -->
             <!-- <img data-src="getRandomImage(breed)" style="clear: both;"> -->
             <img v-bind:src="breedsData.get(breed).img" style="clear: both;">
           </figure>
         </div>
-        {{ bottomVisible() }}
         <header class="card-header">
           <h1>{{ capitalizedBreedName(breed) }}</h1>
           <!-- <h1
@@ -260,8 +258,18 @@ export default {
     },
     shiftBreeds() {
       if (this.bottomVisible()) {
-        for (let i = 0; i < 5; i++) {
-          this.loadedBreeds.push(this.remainingBreedsToLoad.shift());
+        if (this.remainingBreedsToLoad.length >= 5) {
+          for (let i = 0; i < 5; i++) {
+            let breed = this.remainingBreedsToLoad.shift();
+            this.getRandomImage(breed);
+            this.loadedBreeds.push(breed);
+          }
+        } else {
+          for (let i = 0; i < this.remainingBreedsToLoad.length; i++) {
+            let breed = this.remainingBreedsToLoad.shift();
+            this.getRandomImage(breed);
+            this.loadedBreeds.push(breed);
+          }
         }
       }
     }
@@ -277,14 +285,9 @@ export default {
       .get("http://localhost:3000/api/dogcounts")
       .then(counts => {
         let breedMap = new Map();
-        console.log(counts.data);
         counts.data.forEach(breed => {
           this.remainingBreedsToLoad.push(breed.id);
           breedMap.set(breed.id, { count: breed.count, img: null });
-          // array.forEach(breed => {
-          //   console.log(breed);
-          //   breedMap.set(breed.id, { count: breed.count, img: null });
-          // });
         });
         return breedMap;
       })
@@ -292,6 +295,14 @@ export default {
         this.breedsData = breedMap;
         this.shiftBreeds();
         this.shiftBreeds();
+        console.log(
+          "offsetHeight " +
+            document.getElementById("dog-container").offsetHeight
+        );
+        console.log("innerHeight " + window.innerHeight);
+        // do {
+        //   this.shiftBreeds();
+        // } while (document.documentElement.clientHeight < window.innerHeight);
       });
 
     // axios
@@ -359,6 +370,7 @@ export default {
   background-image: url("./assets/wood.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
+  /* min-height: 100vh; */
 }
 
 .flex-container {
