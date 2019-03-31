@@ -28,7 +28,7 @@
       <div class="navbar-start"></div>
 
       <div class="navbar-end">
-        <a class="navbar-item">About</a>
+        <a class="navbar-item dog-text">About</a>
       </div>
     </div>
   </nav>
@@ -61,6 +61,10 @@ export default {
   margin-right: 15px;
 }
 .dog-logo-text {
+  font-family: "Baloo Chettan", cursive;
+}
+
+.dog-text {
   font-family: "Baloo Chettan", cursive;
 }
 </style>

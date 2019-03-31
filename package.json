@@ -9,7 +9,8 @@
   "dependencies": {
     "axios": "^0.18.0",
     "bulma": "^0.7.4",
-    "vue": "^2.6.6"
+    "vue": "^2.6.6",
+    "vue-lazyload": "^1.2.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
