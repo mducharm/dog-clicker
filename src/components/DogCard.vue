@@ -4,12 +4,12 @@
       <figure class="image is-128x128">
         <!-- <figure class="image is-128x128" v-lazy-container="{ selector: 'img' }"> -->
         <!-- <img data-src="getRandomImage(breed)" style="clear: both;"> -->
-        <img v-bind:src="dogData[1].img" style="clear: both;">
+        <img v-bind:src="imgSRC" style="clear: both;">
       </figure>
     </div>
-    <header class="card-header">{{ capitalizedBreedName(dogData[0]) }}</header>
+    <header class="card-header">{{ capitalizedBreedName(dogID) }}</header>
     <div class="level card-bar">
-      <span class="tag is-dark count">{{ dogData[1].count }}</span>
+      <span class="tag is-dark count">{{ dogCount }}</span>
       <i class="material-icons">thumb_up</i>
     </div>
   </div>
@@ -18,7 +18,7 @@
 <script>
 export default {
   name: "DogCard",
-  props: ["dogData"],
+  props: ["dogID", "imgSRC", "dogCount"],
   data() {
     return {};
   },
