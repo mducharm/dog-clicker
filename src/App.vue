@@ -7,6 +7,7 @@
           :dogID="breed"
           :imgSRC="breedsData.get(breed).img"
           :dogCount="breedsData.get(breed).count"
+          @clicked="dogClicked($event)"
         />
         <!-- {{ key }}
         {{ value }}-->
@@ -276,6 +277,16 @@ export default {
             return response.data.message;
           });
       }
+    },
+    incrementDogClicks(id) {
+      let breedCountAndImage = this.breedsData.get(id);
+      breedCountAndImage.count = breedCountAndImage.count + 1;
+      this.breedsData.set(id, breedCountAndImage);
+    },
+    dogClicked(id) {
+      axios.post(`http://localhost:3000/api/click/${id}`).then(clicked => {
+        this.incrementDogClicks(id);
+      });
     }
   },
   created() {

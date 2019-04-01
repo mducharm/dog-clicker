@@ -10,7 +10,7 @@
     <header class="card-header">{{ capitalizedBreedName(dogID) }}</header>
     <div class="level card-bar">
       <span class="tag is-dark count">{{ dogCount }}</span>
-      <i class="material-icons">thumb_up</i>
+      <i class="material-icons" @click="$emit('clicked', dogID)">thumb_up</i>
     </div>
   </div>
 </template>
