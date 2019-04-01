@@ -288,12 +288,14 @@ export default {
     axios
       .get("http://localhost:3000/api/dogcounts")
       .then(counts => {
+        let sortedCounts = counts.data.sort((a, b) =>
+          a.count < b.count ? 1 : -1
+        );
         let breedMap = new Map();
-        counts.data.forEach(breed => {
+        sortedCounts.forEach(breed => {
           this.remainingBreedsToLoad.push(breed.id);
           breedMap.set(breed.id, { count: breed.count, img: null });
         });
-        console.log(breedMap);
         return breedMap;
       })
       .then(breedMap => {
