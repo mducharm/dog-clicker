@@ -2,30 +2,27 @@
   <div id="app">
     <DogNavbar/>
     <div class="container flex-container" id="dog-container">
+      <div v-for="[key, value] in breedsData.entries()" :key="key">
+        <DogCard :dogData="[key, value]"/>
+        <!-- {{ key }}
+        {{ value }}-->
+      </div>
       <!-- {{ loadedBreeds }}
       {{ remainingBreedsToLoad }}-->
-      <div v-for="(breed, index) in loadedBreeds" :key="index" class="card">
-        <!-- <div v-for="(breed, index) in loadedBreeds" :key="index" class="card"> -->
+      <!-- <div v-for="(breed, index) in loadedBreeds" :key="index" class="card">
         <div class="card-image">
           <figure class="image is-128x128">
-            <!-- <figure class="image is-128x128" v-lazy-container="{ selector: 'img' }"> -->
-            <!-- <img data-src="getRandomImage(breed)" style="clear: both;"> -->
             <img v-bind:src="breedsData.get(breed).img" style="clear: both;">
           </figure>
         </div>
         <header class="card-header">
           <h1>{{ capitalizedBreedName(breed) }}</h1>
-          <!-- <h1
-            v-if="'subBreed' in breedObject"
-            class="card-header-text"
-          >{{breedObject.subBreed + " " + breedObject.breed}}</h1>
-          <h1 v-else class="card-header-text">{{breedObject.breed}}</h1>-->
         </header>
         <div class="level card-bar">
           <span class="tag is-dark count">{{breedsData.get(breed).count}}</span>
           <i class="material-icons">thumb_up</i>
         </div>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -176,34 +173,7 @@ export default {
       }
     }
   },
-  computed: {
-    // getRandomImage(id) {
-    //   let breedArray = splitBreedName(id);
-    //   if (breedArray.length > 1) {
-    //     axios
-    //       .get(
-    //         `https://dog.ceo/api/breed/${breedArray[1]}/${
-    //           breedArray[0]
-    //         }/images/random`
-    //       )
-    //       .then(response => {
-    //         let breedObject = this.breedsData.get(id);
-    //         breedObject.img = response.data.message;
-    //         this.breedsData.set(id, breedObject);
-    //         return response.data.message;
-    //       });
-    //   } else {
-    //     axios
-    //       .get(`https://dog.ceo/api/breed/${breedArray[0]}/images/random`)
-    //       .then(response => {
-    //         let breedObject = this.breedsData.get(id);
-    //         breedObject.img = response.data.message;
-    //         this.breedsData.set(id, breedObject);
-    //         return response.data.message;
-    //       });
-    //   }
-    // }
-  },
+  computed: {},
   methods: {
     splitBreedName(id) {
       if (id.includes("-")) {
@@ -212,17 +182,17 @@ export default {
         return [id];
       }
     },
-    capitalize(word) {
-      return word.charAt(0).toUpperCase() + word.slice(1);
-    },
-    capitalizedBreedName(id) {
-      if (id.includes("-")) {
-        let splitID = id.split("-");
-        return `${this.capitalize(splitID[0])} ${this.capitalize(splitID[1])}`;
-      } else {
-        return this.capitalize(id);
-      }
-    },
+    // capitalize(word) {
+    //   return word.charAt(0).toUpperCase() + word.slice(1);
+    // },
+    // capitalizedBreedName(id) {
+    //   if (id.includes("-")) {
+    //     let splitID = id.split("-");
+    //     return `${this.capitalize(splitID[0])} ${this.capitalize(splitID[1])}`;
+    //   } else {
+    //     return this.capitalize(id);
+    //   }
+    // },
     getRandomImage(id) {
       let breedArray = this.splitBreedName(id);
       if (breedArray.length > 1) {
@@ -284,22 +254,24 @@ export default {
     axios
       .get("http://localhost:3000/api/dogcounts")
       .then(counts => {
+        // console.log(counts);
         let breedMap = new Map();
         counts.data.forEach(breed => {
           this.remainingBreedsToLoad.push(breed.id);
           breedMap.set(breed.id, { count: breed.count, img: null });
         });
+        console.log(breedMap);
         return breedMap;
       })
       .then(breedMap => {
         this.breedsData = breedMap;
-        this.shiftBreeds();
-        this.shiftBreeds();
-        console.log(
-          "offsetHeight " +
-            document.getElementById("dog-container").offsetHeight
-        );
-        console.log("innerHeight " + window.innerHeight);
+        // this.shiftBreeds();
+        // this.shiftBreeds();
+        // console.log(
+        //   "offsetHeight " +
+        //     document.getElementById("dog-container").offsetHeight
+        // );
+        // console.log("innerHeight " + window.innerHeight);
         // do {
         //   this.shiftBreeds();
         // } while (document.documentElement.clientHeight < window.innerHeight);
