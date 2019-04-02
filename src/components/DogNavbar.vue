@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar is-fixed-top is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://bulma.io">
+      <a class="navbar-item" href="#">
         <!-- <img src="https://bulma.io/images/bulma-logo.png" width="112" height="28"> -->
         <div class="icon has-text-warning dog-logo">
           <i class="fas fa-dog fa-2x"></i>

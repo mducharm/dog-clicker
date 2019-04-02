@@ -1,33 +1,25 @@
 <template>
   <div id="app">
     <DogNavbar/>
-    <div class="container flex-container" id="dog-container">
-      <div v-for="(breed, index) in loadedBreeds" :key="index">
-        <DogCard
-          :dogID="breed"
-          :imgSRC="breedsData[breed].img"
-          :dogCount="breedsData[breed].count"
-          @clicked="dogClicked($event)"
-        />
-        <!-- {{ key }}
-        {{ value }}-->
+    <div class="container" id="dog-container">
+      <div class="flex-container">
+        <div v-for="(breed, index) in loadedBreeds" :key="index">
+          <DogCard
+            :dogID="breed"
+            :imgSRC="breedsData[breed].img"
+            :dogCount="breedsData[breed].count"
+            @clicked="dogClicked($event)"
+          />
+        </div>
       </div>
-      <!-- {{ loadedBreeds }}
-      {{ remainingBreedsToLoad }}-->
-      <!-- <div v-for="(breed, index) in loadedBreeds" :key="index" class="card">
-        <div class="card-image">
-          <figure class="image is-128x128">
-            <img v-bind:src="breedsData.get(breed).img" style="clear: both;">
-          </figure>
-        </div>
-        <header class="card-header">
-          <h1>{{ capitalizedBreedName(breed) }}</h1>
-        </header>
-        <div class="level card-bar">
-          <span class="tag is-dark count">{{breedsData.get(breed).count}}</span>
-          <i class="material-icons">thumb_up</i>
-        </div>
-      </div>-->
+      <div class="level">
+        <button
+          type="button"
+          @click="add5Breeds()"
+          class="button is-white is-medium load-dogs is-rounded is-fullwidth"
+          :class="{'is-loading': isLoading}"
+        >Load More Dogs...</button>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +29,7 @@ import DogCard from "./components/DogCard.vue";
 import DogNavbar from "./components/DogNavbar.vue";
 import axios from "axios";
 import { constants } from "fs";
+import { setTimeout } from "timers";
 
 export default {
   name: "app",
@@ -47,6 +40,7 @@ export default {
   data() {
     return {
       bottom: false,
+      isLoading: false,
       breedsData: {},
       remainingBreedsToLoad: [],
       loadedBreeds: [],
@@ -171,13 +165,14 @@ export default {
       }
     };
   },
-  watch: {
-    bottom(bottom) {
-      if (bottom) {
-        this.shiftBreeds();
-      }
-    }
-  },
+  // watch: {
+  //   bottom(bottom) {
+  //     if (bottom) {
+  //       // this.shiftBreeds();
+  //       this.addBreed();
+  //     }
+  //   }
+  // },
   computed: {},
   methods: {
     splitBreedName(id) {
@@ -187,108 +182,87 @@ export default {
         return [id];
       }
     },
-    // capitalize(word) {
-    //   return word.charAt(0).toUpperCase() + word.slice(1);
+    // bottomVisible() {
+    //   const scrollY = window.scrollY;
+    //   const visible = document.documentElement.clientHeight;
+    //   const pageHeight = document.documentElement.scrollHeight;
+    //   const bottomOfPage = visible + scrollY >= pageHeight;
+    //   return bottomOfPage || pageHeight < visible;
     // },
-    // capitalizedBreedName(id) {
-    //   if (id.includes("-")) {
-    //     let splitID = id.split("-");
-    //     return `${this.capitalize(splitID[0])} ${this.capitalize(splitID[1])}`;
-    //   } else {
-    //     return this.capitalize(id);
+    // shiftBreeds() {
+    //   if (this.bottomVisible()) {
+    //     if (this.remainingBreedsToLoad.length >= 5) {
+    //       for (let i = 0; i < 5; i++) {
+    //         let breed = this.remainingBreedsToLoad.shift();
+    //         // this.getRandomImage(breed);
+    //         this.loadedBreeds.push(breed);
+    //       }
+    //     } else {
+    //       for (let i = 0; i < this.remainingBreedsToLoad.length; i++) {
+    //         let breed = this.remainingBreedsToLoad.shift();
+    //         // this.getRandomImage(breed);
+    //         this.loadedBreeds.push(breed);
+    //       }
+    //     }
     //   }
     // },
-    // getRandomImage(id) {
-    //   let breedArray = this.splitBreedName(id);
-    //   if (breedArray.length > 1) {
-    //     axios
-    //       .get(
-    //         `https://dog.ceo/api/breed/${breedArray[1]}/${
-    //           breedArray[0]
-    //         }/images/random`
-    //       )
-    //       .then(response => {
-    //         let breedObject = this.breedsData.get(id);
-    //         breedObject.img = response.data.message;
-    //         this.breedsData.set(id, breedObject);
-    //         return response.data.message;
-    //       });
-    //   } else {
-    //     axios
-    //       .get(`https://dog.ceo/api/breed/${breedArray[0]}/images/random`)
-    //       .then(response => {
-    //         let breedObject = this.breedsData.get(id);
-    //         breedObject.img = response.data.message;
-    //         this.breedsData.set(id, breedObject);
-    //         return response.data.message;
-    //       });
-    //   }
-    // },
-    bottomVisible() {
-      const scrollY = window.scrollY;
-      const visible = document.documentElement.clientHeight;
-      const pageHeight = document.documentElement.scrollHeight;
-      const bottomOfPage = visible + scrollY >= pageHeight;
-      return bottomOfPage || pageHeight < visible;
-    },
-    shiftBreeds() {
-      if (this.bottomVisible()) {
-        if (this.remainingBreedsToLoad.length >= 5) {
-          for (let i = 0; i < 5; i++) {
-            let breed = this.remainingBreedsToLoad.shift();
-            // this.getRandomImage(breed);
-            this.loadedBreeds.push(breed);
-          }
+    addBreed() {
+      if (this.remainingBreedsToLoad.length > 0) {
+        let breedToLoad = this.remainingBreedsToLoad.shift();
+        let breedArray = this.splitBreedName(breedToLoad);
+
+        if (breedArray.length > 1) {
+          axios
+            .get(
+              `https://dog.ceo/api/breed/${breedArray[1]}/${
+                breedArray[0]
+              }/images/random`
+            )
+            .then(response => {
+              let breedCountAndImage = this.breedsData[breedToLoad];
+              breedCountAndImage.img = response.data.message;
+              this.$set(this.breedsData, breedToLoad, breedCountAndImage);
+
+              // let breedCountAndImage = this.breedsData.get(breedToLoad);
+              // breedCountAndImage.img = response.data.message;
+              // this.breedsData.set(breedToLoad, breedCountAndImage);
+              this.loadedBreeds.push(breedToLoad);
+              return response.data.message;
+            });
         } else {
-          for (let i = 0; i < this.remainingBreedsToLoad.length; i++) {
-            let breed = this.remainingBreedsToLoad.shift();
-            // this.getRandomImage(breed);
-            this.loadedBreeds.push(breed);
-          }
+          axios
+            .get(`https://dog.ceo/api/breed/${breedArray[0]}/images/random`)
+            .then(response => {
+              let breedCountAndImage = this.breedsData[breedToLoad];
+              // let breedCountAndImage = this.breedsData.get(breedToLoad);
+              breedCountAndImage.img = response.data.message;
+              // this.breedsData.set(breedToLoad, breedCountAndImage);
+              this.$set(this.breedsData, breedToLoad, breedCountAndImage);
+              this.loadedBreeds.push(breedToLoad);
+              return response.data.message;
+            });
         }
       }
     },
-    addBreed() {
-      let breedToLoad = this.remainingBreedsToLoad.shift();
-      let breedArray = this.splitBreedName(breedToLoad);
-
-      if (breedArray.length > 1) {
-        axios
-          .get(
-            `https://dog.ceo/api/breed/${breedArray[1]}/${
-              breedArray[0]
-            }/images/random`
-          )
-          .then(response => {
-            let breedCountAndImage = this.breedsData[breedToLoad];
-            breedCountAndImage.img = response.data.message;
-            this.$set(this.breedsData, breedToLoad, breedCountAndImage);
-
-            // let breedCountAndImage = this.breedsData.get(breedToLoad);
-            // breedCountAndImage.img = response.data.message;
-            // this.breedsData.set(breedToLoad, breedCountAndImage);
-            this.loadedBreeds.push(breedToLoad);
-            return response.data.message;
-          });
-      } else {
-        axios
-          .get(`https://dog.ceo/api/breed/${breedArray[0]}/images/random`)
-          .then(response => {
-            let breedCountAndImage = this.breedsData[breedToLoad];
-            // let breedCountAndImage = this.breedsData.get(breedToLoad);
-            breedCountAndImage.img = response.data.message;
-            // this.breedsData.set(breedToLoad, breedCountAndImage);
-            this.$set(this.breedsData, breedToLoad, breedCountAndImage);
-            this.loadedBreeds.push(breedToLoad);
-            return response.data.message;
-          });
-      }
+    add5Breeds() {
+      this.isLoading = true;
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 1500);
+      this.addBreed();
+      this.addBreed();
+      this.addBreed();
+      this.addBreed();
+      this.addBreed();
     },
     incrementDogClicks(id) {
       let breedCountAndImage = this.breedsData[id];
       breedCountAndImage.count = breedCountAndImage.count + 1;
       // this.breedsData.set(id, breedCountAndImage);
       this.$set(this.breedsData, id, breedCountAndImage);
+      this.loadedBreeds.sort((a, b) => {
+        this.breedsData[a].count < this.breedsData[b].count ? 1 : -1;
+      });
     },
     dogClicked(id) {
       axios.post(`http://localhost:3000/api/click/${id}`).then(clicked => {
@@ -296,12 +270,12 @@ export default {
       });
     }
   },
-  created() {
-    window.addEventListener("scroll", () => {
-      this.bottom = this.bottomVisible();
-      this.addBreed();
-    });
-  },
+  // created() {
+  //   window.addEventListener("scroll", () => {
+  //     this.bottom = this.bottomVisible();
+  //     this.addBreed();
+  //   });
+  // },
   mounted() {
     axios
       .get("http://localhost:3000/api/dogcounts")
@@ -326,21 +300,9 @@ export default {
       })
       .then(breedObject => {
         // this.breedsData = breedObject;
-        this.addBreed();
-        this.addBreed();
-        this.addBreed();
-        this.addBreed();
-
-        // this.shiftBreeds();
-        // this.shiftBreeds();
-        // console.log(
-        //   "offsetHeight " +
-        //     document.getElementById("dog-container").offsetHeight
-        // );
-        // console.log("innerHeight " + window.innerHeight);
-        // do {
-        //   this.shiftBreeds();
-        // } while (document.documentElement.clientHeight < window.innerHeight);
+        for (let i = 0; i < 15; i++) {
+          this.addBreed();
+        }
       });
 
     // axios
@@ -395,27 +357,17 @@ export default {
 </script>
 
 <style>
-/* #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-} */
-
 #app {
   background-image: url("./assets/wood.jpg");
   background-repeat: no-repeat;
   background-attachment: fixed;
-  /* min-height: 100vh; */
 }
 
 .flex-container {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
-  margin-top: 70px;
+  padding-top: 40px;
 }
 
 .card {
@@ -436,5 +388,9 @@ figure.image {
 
 .count {
   font-family: "Baloo Chettan", cursive;
+}
+
+.load-dogs {
+  margin: 20px;
 }
 </style>
