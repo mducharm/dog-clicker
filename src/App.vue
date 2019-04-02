@@ -165,14 +165,6 @@ export default {
       }
     };
   },
-  // watch: {
-  //   bottom(bottom) {
-  //     if (bottom) {
-  //       // this.shiftBreeds();
-  //       this.addBreed();
-  //     }
-  //   }
-  // },
   computed: {},
   methods: {
     splitBreedName(id) {
@@ -182,30 +174,6 @@ export default {
         return [id];
       }
     },
-    // bottomVisible() {
-    //   const scrollY = window.scrollY;
-    //   const visible = document.documentElement.clientHeight;
-    //   const pageHeight = document.documentElement.scrollHeight;
-    //   const bottomOfPage = visible + scrollY >= pageHeight;
-    //   return bottomOfPage || pageHeight < visible;
-    // },
-    // shiftBreeds() {
-    //   if (this.bottomVisible()) {
-    //     if (this.remainingBreedsToLoad.length >= 5) {
-    //       for (let i = 0; i < 5; i++) {
-    //         let breed = this.remainingBreedsToLoad.shift();
-    //         // this.getRandomImage(breed);
-    //         this.loadedBreeds.push(breed);
-    //       }
-    //     } else {
-    //       for (let i = 0; i < this.remainingBreedsToLoad.length; i++) {
-    //         let breed = this.remainingBreedsToLoad.shift();
-    //         // this.getRandomImage(breed);
-    //         this.loadedBreeds.push(breed);
-    //       }
-    //     }
-    //   }
-    // },
     addBreed() {
       if (this.remainingBreedsToLoad.length > 0) {
         let breedToLoad = this.remainingBreedsToLoad.shift();
@@ -222,10 +190,6 @@ export default {
               let breedCountAndImage = this.breedsData[breedToLoad];
               breedCountAndImage.img = response.data.message;
               this.$set(this.breedsData, breedToLoad, breedCountAndImage);
-
-              // let breedCountAndImage = this.breedsData.get(breedToLoad);
-              // breedCountAndImage.img = response.data.message;
-              // this.breedsData.set(breedToLoad, breedCountAndImage);
               this.loadedBreeds.push(breedToLoad);
               return response.data.message;
             });
@@ -260,9 +224,9 @@ export default {
       breedCountAndImage.count = breedCountAndImage.count + 1;
       // this.breedsData.set(id, breedCountAndImage);
       this.$set(this.breedsData, id, breedCountAndImage);
-      this.loadedBreeds.sort((a, b) => {
-        this.breedsData[a].count < this.breedsData[b].count ? 1 : -1;
-      });
+      // this.loadedBreeds.sort((a, b) => {
+      //   this.breedsData[a].count < this.breedsData[b].count ? 1 : -1;
+      // });
     },
     dogClicked(id) {
       axios.post(`http://localhost:3000/api/click/${id}`).then(clicked => {
@@ -270,12 +234,6 @@ export default {
       });
     }
   },
-  // created() {
-  //   window.addEventListener("scroll", () => {
-  //     this.bottom = this.bottomVisible();
-  //     this.addBreed();
-  //   });
-  // },
   mounted() {
     axios
       .get("http://localhost:3000/api/dogcounts")
@@ -304,54 +262,6 @@ export default {
           this.addBreed();
         }
       });
-
-    // axios
-    //   .get("https://dog.ceo/api/breeds/list/all")
-    //   .then(response => {
-    //     let breeds = response.data.message;
-    //     let breedArray = [];
-    //     Object.keys(this.breeds).forEach(breed => {
-    //       if (breeds[breed].length > 0) {
-    //         breeds[breed].forEach(subBreed =>
-    //           breedArray.push([subBreed, breed])
-    //         );
-    //       } else {
-    //         breedArray.push([breed]);
-    //       }
-    //     });
-    //     // this.breedsData = breedArray;
-    //     return breedArray;
-    //   })
-    //   .then(breedsArray => {
-    //     breedsArray.forEach(breed => {
-    //       if (breed.length > 1) {
-    //         axios
-    //           .get(
-    //             `https://dog.ceo/api/breed/${breed[1]}/${
-    //               breed[0]
-    //             }/images/random`
-    //           )
-    //           .then(response => {
-    //             this.breedsData.push({
-    //               breed: breed[1],
-    //               subBreed: breed[0],
-    //               imgSrc: response.data.message
-    //             });
-    //             return response.data.message;
-    //           });
-    //       } else {
-    //         axios
-    //           .get(`https://dog.ceo/api/breed/${breed[0]}/images/random`)
-    //           .then(response => {
-    //             this.breedsData.push({
-    //               breed: breed[0],
-    //               imgSrc: response.data.message
-    //             });
-    //             return response.data.message;
-    //           });
-    //       }
-    //     });
-    //   });
   }
 };
 </script>
