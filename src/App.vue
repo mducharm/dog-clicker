@@ -5,8 +5,8 @@
       <div v-for="(breed, index) in loadedBreeds" :key="index">
         <DogCard
           :dogID="breed"
-          :imgSRC="breedsData.get(breed).img"
-          :dogCount="breedsData.get(breed).count"
+          :imgSRC="breedsData[breed].img"
+          :dogCount="breedsData[breed].count"
           @clicked="dogClicked($event)"
         />
         <!-- {{ key }}
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       bottom: false,
-      breedsData: null,
+      breedsData: {},
       remainingBreedsToLoad: [],
       loadedBreeds: [],
       breeds: {
@@ -260,9 +260,13 @@ export default {
             }/images/random`
           )
           .then(response => {
-            let breedCountAndImage = this.breedsData.get(breedToLoad);
+            let breedCountAndImage = this.breedsData[breedToLoad];
             breedCountAndImage.img = response.data.message;
-            this.breedsData.set(breedToLoad, breedCountAndImage);
+            this.$set(this.breedsData, breedToLoad, breedCountAndImage);
+
+            // let breedCountAndImage = this.breedsData.get(breedToLoad);
+            // breedCountAndImage.img = response.data.message;
+            // this.breedsData.set(breedToLoad, breedCountAndImage);
             this.loadedBreeds.push(breedToLoad);
             return response.data.message;
           });
@@ -270,18 +274,21 @@ export default {
         axios
           .get(`https://dog.ceo/api/breed/${breedArray[0]}/images/random`)
           .then(response => {
-            let breedCountAndImage = this.breedsData.get(breedToLoad);
+            let breedCountAndImage = this.breedsData[breedToLoad];
+            // let breedCountAndImage = this.breedsData.get(breedToLoad);
             breedCountAndImage.img = response.data.message;
-            this.breedsData.set(breedToLoad, breedCountAndImage);
+            // this.breedsData.set(breedToLoad, breedCountAndImage);
+            this.$set(this.breedsData, breedToLoad, breedCountAndImage);
             this.loadedBreeds.push(breedToLoad);
             return response.data.message;
           });
       }
     },
     incrementDogClicks(id) {
-      let breedCountAndImage = this.breedsData.get(id);
+      let breedCountAndImage = this.breedsData[id];
       breedCountAndImage.count = breedCountAndImage.count + 1;
-      this.breedsData.set(id, breedCountAndImage);
+      // this.breedsData.set(id, breedCountAndImage);
+      this.$set(this.breedsData, id, breedCountAndImage);
     },
     dogClicked(id) {
       axios.post(`http://localhost:3000/api/click/${id}`).then(clicked => {
@@ -302,15 +309,23 @@ export default {
         let sortedCounts = counts.data.sort((a, b) =>
           a.count < b.count ? 1 : -1
         );
-        let breedMap = new Map();
+        let breedObject = {};
         sortedCounts.forEach(breed => {
           this.remainingBreedsToLoad.push(breed.id);
-          breedMap.set(breed.id, { count: breed.count, img: null });
+
+          this.$set(this.breedsData, breed.id, {
+            count: breed.count,
+            img: null
+          });
+
+          // breedObject[breed.id] =
+
+          // breedObject.set(breed.id, { count: breed.count, img: null });
         });
-        return breedMap;
+        return breedObject;
       })
-      .then(breedMap => {
-        this.breedsData = breedMap;
+      .then(breedObject => {
+        // this.breedsData = breedObject;
         this.addBreed();
         this.addBreed();
         this.addBreed();
